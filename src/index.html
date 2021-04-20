@@ -1,26 +1,24 @@
 <script>
-  const maxMinutes = 40;
-  const maxSeconds = maxMinutes * 60;
+  const maxSeconds = 40 * 60;
 
-  const createElement = () => {
+  function makeImage(timer) {
+    if(!timer.started) return;
+
+    const minutes = Math.floor(timer.seconds / 60);
+    const seconds = timer.seconds % 60;
+
     const canvas = document.createElement('canvas');
-    canvas.width = 200;
-    canvas.height = 100;
-    return canvas
-  }
-
-  const makeImage = (timer = { secondsLeft: maxSeconds, started: false }) => {
-    const minutes = Math.floor(timer.secondsLeft / 60);
-    const seconds = timer.secondsLeft % 60;
-    const canvas = createElement();   
+    canvas.width = 16;
+    canvas.height = 16;
 
     const ctx = canvas.getContext('2d');
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillStyle = timer.started ? "white" : "#999";
-    ctx.font = "100px sans-serif";
-    canvas.style.letterSpacing = '1px'
-    ctx.fillText(`${minutes}:${seconds}`, 0, 100);
+    ctx.fillStyle = "#8156e6";
+
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = ctx.fillStyle;
+    ctx.beginPath();
+    ctx.arc(8, 8, 7, 0, (6.283 * timer.seconds) / timer.endTime,  false);
+    ctx.stroke();
 
     return canvas.toDataURL();
   }
