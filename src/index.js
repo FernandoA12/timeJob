@@ -1,10 +1,9 @@
 
-const { app, BrowserWindow, Tray, Menu, MenuItem, nativeImage, globalShortcut } = require('electron');
+const { app, BrowserWindow, Tray, Menu, nativeImage, globalShortcut } = require('electron');
 const path = require('path');
-const Timer = require('./Timer');
+const Timer = require('./app/Timer');
 
-
-const icon = nativeImage.createFromPath(path.resolve('src/assets/IconTemplate@2x.png'));
+const icon = nativeImage.createFromPath(`${__dirname}/assets/IconTemplate@2x.png`);
 let window;
 let tray;
 let timer = new Timer(updateIcon, icon);
@@ -20,7 +19,7 @@ const menu = Menu.buildFromTemplate([
 ]);
 
 function createWindow() {
-  window = new BrowserWindow({ show: false });
+  window = new BrowserWindow({ show: false, icon });
   window.loadURL(`file://${__dirname}/index.html`);
   window.on('closed', () => { window = null; });
 }

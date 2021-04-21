@@ -1,46 +1,58 @@
 {
   "name": "timejob",
-  "version": "0.0.1",
-  "main": "./src/main.js",
-  "homepage": "nenhuma",
+  "productName": "timejob",
+  "version": "1.0.0",
+  "description": "My Electron application description",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "lint": "echo \"No linting configured\""
+  },
+  "keywords": [],
   "author": {
     "name": "Fernando Souza",
-    "email": "fernando.souza@doxacode.com.br"
+    "email": "fernandoantoniocardosodesouza@gmail.com"
   },
   "license": "MIT",
-  "scripts": {
-    "dev": "electron .",
-    "dist": "electron-builder"
-  },
-  "build": {
-    "productName": "TimeJob",
-    "appId": "br.com.doxacode.timejob",
-    "win": {
-      "target": [
-        "msi"
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {
+            "options": {
+              "name": "TimeJob",
+              "icon": "./src/assets/IconTemplate@2x.png"
+            }
+          }
+        }
       ]
-    },
-    "linux": {
-      "target": [
-        "deb"
-      ],
-      "category": "Network",
-      "icon": "src/assets/icon.png"
-    },
-    "mac": {
-      "target": "dmg"
-    },
-    "directories": {
-      "buildResources": "src/assets",
-      "output": "release"
     }
   },
   "dependencies": {
-    "date-fns": "^2.21.1"
+    "date-fns": "^2.21.1",
+    "electron-squirrel-startup": "^1.0.0"
   },
   "devDependencies": {
-    "electron": "^2",
-    "electron-builder": "latest",
-    "webpack": "^5.33.2"
+    "@electron-forge/cli": "^6.0.0-beta.54",
+    "@electron-forge/maker-deb": "^6.0.0-beta.54",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.54",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
+    "@electron-forge/maker-zip": "^6.0.0-beta.54",
+    "electron": "2.0.18"
   }
 }
