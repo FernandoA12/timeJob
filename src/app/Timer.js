@@ -14,8 +14,9 @@ class Timer {
   }
 
   toggle() {
+    if(this.endTime === 0) return 'new';
     if (!this.started) {
-      this.start()
+      this.continue()
       return "start"
     };
     this.pause();
@@ -55,7 +56,6 @@ class Timer {
 
   pause() {
     this.started = false;
-    this.endTime = this.seconds;
     clearInterval(this.intervalId);
     this.updateView();
   }

@@ -43,8 +43,7 @@ function updateIcon() {
 
 function registerShortcuts() {
   globalShortcut.register("F6", () => {
-    if(timer.toggle() === 'pause') return;
-    run();
+    if(timer.toggle() === 'new') return run();
   });
 }
 
