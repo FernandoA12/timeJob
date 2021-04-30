@@ -1,26 +1,46 @@
-<script>
-  const maxSeconds = 40 * 60;
+<html lang="pt-br">
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+    div {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
 
-  function makeImage(timer) {
-    if(!timer.started) return;
-
-    const minutes = Math.floor(timer.seconds / 60);
-    const seconds = timer.seconds % 60;
-
-    const canvas = document.createElement('canvas');
-    canvas.width = 16;
-    canvas.height = 16;
-
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = "#8156e6";
-
-    ctx.lineWidth = 1.5;
-    ctx.strokeStyle = ctx.fillStyle;
-    ctx.beginPath();
-    ctx.arc(8, 8, 7, 0, (6.283 * timer.seconds) / timer.endTime,  false);
-    ctx.stroke();
-
-    return canvas.toDataURL();
-  }
-
-</script>
+    button {
+      margin: 10px;
+      border: none;
+      padding: 10px;
+      background-color:  rgb(40, 183, 206);
+      color: white;
+      font-size: 14pt;
+      border-radius: 10px;
+      outline: none;
+    }
+    button:hover {
+      opacity: .8;
+    }
+  </style>
+  <div class="container">
+    <video></video>
+    <button>
+      CAPTURAR
+    </button>
+  </div>
+  <script>
+    navigator.getUserMedia({video: true, audio: false}, (localMediaStream) => {
+        var video = document.querySelector('video')
+        video.srcObject = localMediaStream
+        video.autoplay = true
+        video.width = 790,
+        video.height = 500
+     }, console.log)
+  </script>
+</html>

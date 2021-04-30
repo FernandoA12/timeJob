@@ -1,8 +1,8 @@
 {
-  "name": "timejob",
-  "productName": "timejob",
+  "name": "medmanager-desktop",
+  "productName": "medmanager-desktop",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "Medmanager para desktop",
   "main": "src/index.js",
   "scripts": {
     "start": "electron-forge start",
@@ -35,7 +35,7 @@
           "name": "@electron-forge/maker-deb",
           "config": {
             "options": {
-              "name": "TimeJob",
+              "name": "medmanager",
               "icon": "./src/assets/IconTemplate@2x.png"
             }
           }
@@ -45,7 +45,8 @@
   },
   "dependencies": {
     "date-fns": "^2.21.1",
-    "electron-squirrel-startup": "^1.0.0"
+    "electron-squirrel-startup": "^1.0.0",
+    "webcamjs": "^1.0.26"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.54",
@@ -53,6 +54,6 @@
     "@electron-forge/maker-rpm": "^6.0.0-beta.54",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
     "@electron-forge/maker-zip": "^6.0.0-beta.54",
-    "electron": "2.0.18"
+    "electron": "12.0.4"
   }
 }

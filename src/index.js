@@ -1,62 +1,82 @@
-
-const { app, BrowserWindow, Tray, Menu, nativeImage, globalShortcut } = require('electron');
+const { app, BrowserWindow } = require('electron');
 const path = require('path');
-const Timer = require('./app/Timer');
-
-const icon = nativeImage.createFromPath(`${__dirname}/assets/IconTemplate@2x.png`);
-let window;
-let tray;
-let timer = new Timer(updateIcon, icon);
-let lastTimer = 'descansar';
-
-const menu = Menu.buildFromTemplate([
-  { label: 'codar',  click() { timer.start(process.env.TIMER_JOB || 40) } },
-  { label: 'descansar',  click() { timer.start(process.env.TIMER_REST || 10) } },
-  { label: 'quanto tempo falta?',  click() { timer.remainingTime() } },
-  { label: 'continuar',  click() { if(timer.started || timer.endTime <= 0) return;  timer.continue() } },
-  { label: 'pausar',  click() { if(!timer.started) return; timer.pause() } },
-  { label: 'fechar', click() { app.quit() } }
-]);
+let topWindow;
+let childWindow;
 
 function createWindow() {
-  window = new BrowserWindow({ show: false, icon });
-  window.loadURL(`file://${__dirname}/index.html`);
-  window.on('closed', () => { window = null; });
-}
-
-function createTrayIcon() {
-  tray = new Tray(icon);
-  tray.setContextMenu(menu);
-  tray.on('click', () => {
-    if(timer.toggle() === 'pause') return;
-    run();    
-  } )
-}
-
-function updateIcon() {
-  if(!timer.started) return tray.setImage(icon);
-  const json = JSON.stringify({ ...timer });
-  window.webContents.executeJavaScript(`makeImage(${json})`, false, (dataURL) => {
-    tray.setImage(nativeImage.createFromDataURL(dataURL));
+  topWindow = new BrowserWindow({
+    width: 1280,
+    height: 768,
+    autoHideMenuBar: true,
+    webPreferences: {
+      nodeIntegration: true,
+      preload: path.join(__dirname, 'preload.js'),
+      devTools: true
+    },
+    kiosk: true
   });
-}
-
-function registerShortcuts() {
-  globalShortcut.register("F6", () => {
-    if(timer.toggle() === 'new') return run();
+  childWindow = new BrowserWindow({
+    parent: topWindow,
+    width: 800,
+    height: 600,
+    autoHideMenuBar: true,
+    modal: true,
+    frame: true,
+    webPreferences: {
+      nodeIntegration: true,
+      devTools: true
+    }
   });
-}
-
-function run() {
-  if(lastTimer === 'descansar'){ 
-    lastTimer = 'trabalhar';
-    return timer.start(process.env.TIMER_JOB || 40) 
-  } 
   
-  lastTimer = 'descansar';
-  return timer.start(process.env.TIMER_REST || 10)
+  topWindow.loadURL('http://silvanatagliatella.cloud.med.br');
+  childWindow.loadURL(`file://${__dirname}/index.html`);
+
+  childWindow.on('blur', () => { childWindow.hide() })
+  
+  topWindow.on('closed', () => { topWindow.destroy(); });
+  childWindow.on('closed', () => { childWindow.destroy(); });
+
+  topWindow.webContents.openDevTools();
+
+  topWindow.webContents.on('dom-ready', async e => {
+    const code = `
+      setInterval(() => {
+        const containerButton = document.getElementsByClassName('upload').item(0);
+        if(containerButton){
+          createNewButtonUploader(containerButton)
+        }
+      }, 1000)
+
+      function createNewButtonUploader(container) {
+        const buttonUpload = document.getElementById('newbuttonupload');
+
+        console.log(buttonUpload)
+      
+        buttonUpload.onclick = () => {
+          const camera = document.createElement('div')
+          const video = document.createElement('video')
+          camera.id = 'my_camera'
+          camera.appendChild(video)
+      
+          container.removeChild(buttonUpload)
+          container.appendChild(camera)
+          takeAPicture()
+        }
+        container.appendChild(buttonUpload)
+      
+      }
+      function takeAPicture() {
+        console.log(navigator)
+      }   
+    `
+    console.log(await topWindow.webContents.executeJavaScript(code))
+  })
 }
 
-app.on('ready', () => { createWindow(); createTrayIcon(); registerShortcuts(); });
+
+
+app.on('ready', () => { 
+  createWindow(); 
+});
+
 app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
-app.on('activate', () => { if (!win) createWindow(); });
